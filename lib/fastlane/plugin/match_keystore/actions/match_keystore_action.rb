@@ -63,7 +63,7 @@ module Fastlane
           build_tools_last_version = sub_dir
         end
 
-        build_tools_last_version
+        build_tools_last_version[1..-1]
       end
       
       def self.check_openssl_version
