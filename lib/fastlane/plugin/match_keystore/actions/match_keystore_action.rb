@@ -72,7 +72,7 @@ module Fastlane
         output = `openssl version`
         UI.message(!output.empty? ? "OpenSSL version: " + output.strip : "OpenSSL not found :(")
         
-        if !output.start_with?("OpenSSL") || !output.start_with?("LibreSSL")
+        if !output.start_with?("OpenSSL") && !output.start_with?("LibreSSL")
           raise "Please install OpenSSL 1.1.1 at least https://www.openssl.org/"
         end
       end
