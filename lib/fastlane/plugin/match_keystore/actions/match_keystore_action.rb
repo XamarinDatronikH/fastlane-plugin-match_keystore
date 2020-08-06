@@ -70,7 +70,7 @@ module Fastlane
       
       def self.check_openssl_version
         output = `openssl version`
-        if !output.start_with?("OpenSSL")
+        if !output.start_with?("OpenSSL") || !output.start_with?("LibreSSL")
           raise "Please install OpenSSL 1.1.1 at least https://www.openssl.org/"
         end
         UI.message("OpenSSL version: " + output.strip)
