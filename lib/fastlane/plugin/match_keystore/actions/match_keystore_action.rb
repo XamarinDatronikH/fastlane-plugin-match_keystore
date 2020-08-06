@@ -97,12 +97,14 @@ module Fastlane
       def self.sign_apk(apk_path, keystore_path, key_password, alias_name, alias_password, zip_align)
 
         build_tools_path = self.get_build_tools()
+        apk_signer_path = File.join(build_tools_path, "apksigner")
+        zipalign_path = File.join(build_tools_path, "zipalign")
 
         # https://developer.android.com/studio/command-line/zipalign
         if zip_align == true
           apk_path_aligned = apk_path.gsub(".apk", "-aligned.apk")
           `rm -f '#{apk_path_aligned}'`
-          `#{build_tools_path}zipalign 4 '#{apk_path}' '#{apk_path_aligned}'`
+          `#{zipalign_path} 4 '#{apk_path}' '#{apk_path_aligned}'`
         else
           apk_path_aligned = apk_path
         end
@@ -112,9 +114,9 @@ module Fastlane
 
         # https://developer.android.com/studio/command-line/apksigner
         `rm -f '#{apk_path_signed}'`
-        `#{build_tools_path}/apksigner sign --ks '#{keystore_path}' --ks-key-alias '#{alias_name}' --ks-pass pass:'#{key_password.to_s}' --key-pass pass:'#{alias_password.to_s}' --v1-signing-enabled true --v2-signing-enabled true --out '#{apk_path_signed}' '#{apk_path_aligned}'`
+        `#{apk_signer_path} sign --ks '#{keystore_path}' --ks-key-alias '#{alias_name}' --ks-pass pass:'#{key_password.to_s}' --key-pass pass:'#{alias_password.to_s}' --v1-signing-enabled true --v2-signing-enabled true --out '#{apk_path_signed}' '#{apk_path_aligned}'`
         
-        `#{build_tools_path}/apksigner verify '#{apk_path_signed}'`
+        `#{apk_signer_path} verify '#{apk_path_signed}'`
         `rm -f '#{apk_path_aligned}'`
 
         apk_path_signed
