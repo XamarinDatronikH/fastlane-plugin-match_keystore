@@ -79,7 +79,7 @@ module Fastlane
 
       def self.gen_key(key_path, password)
         `rm -f '#{key_path}'`
-        `echo "#{password}" | openssl dgst -sha512 | awk '{print $2}' | cut -c1-128 > '#{key_path}'`
+        `echo "#{password}" | openssl dgst -sha512 | cut -c1-128 > '#{key_path}'`
       end
 
       def self.encrypt_file(clear_file, encrypt_file, key_path)
