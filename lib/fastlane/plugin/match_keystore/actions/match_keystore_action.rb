@@ -56,7 +56,7 @@ module Fastlane
       def self.get_build_tools
         android_home = self.get_android_home()
 
-        build_tools_root = File.join(ENV['HOME'], android_home, 'build-tools')
+        build_tools_root = File.join(android_home, 'build-tools')
         
         sub_dirs = Dir.glob(File.join(build_tools_root, '**'))
         
