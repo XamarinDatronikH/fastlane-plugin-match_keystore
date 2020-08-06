@@ -55,15 +55,17 @@ module Fastlane
 
       def self.get_build_tools
         android_home = self.get_android_home()
-        build_tools_root = File.join(android_home, '/build-tools')
 
-        sub_dirs = Dir.glob(File.join(build_tools_root, '*', ''))
+        build_tools_root = File.join(ENV['HOME'], android_home, 'build-tools')
+        
+        sub_dirs = Dir.glob(File.join(build_tools_root, '**'))
+        
         build_tools_last_version = ''
         for sub_dir in sub_dirs
           build_tools_last_version = sub_dir
         end
 
-        build_tools_last_version[1..-1]
+        build_tools_last_version
       end
       
       def self.check_openssl_version
@@ -107,9 +109,9 @@ module Fastlane
 
         # https://developer.android.com/studio/command-line/apksigner
         `rm -f '#{apk_path_signed}'`
-        `#{build_tools_path}apksigner sign --ks '#{keystore_path}' --ks-key-alias '#{alias_name}' --ks-pass pass:'#{key_password}' --key-pass pass:'#{alias_password}' --v1-signing-enabled true --v2-signing-enabled true --out '#{apk_path_signed}' '#{apk_path_aligned}'`
+        `#{build_tools_path}/apksigner sign --ks '#{keystore_path}' --ks-key-alias '#{alias_name}' --ks-pass pass:'#{key_password.to_s}' --key-pass pass:'#{alias_password.to_s}' --v1-signing-enabled true --v2-signing-enabled true --out '#{apk_path_signed}' '#{apk_path_aligned}'`
         
-        `#{build_tools_path}apksigner verify '#{apk_path_signed}'`
+        `#{build_tools_path}/apksigner verify '#{apk_path_signed}'`
         `rm -f '#{apk_path_aligned}'`
 
         apk_path_signed
@@ -265,7 +267,7 @@ module Fastlane
         end
 
         # Create keystore with command
-        override_keystore = !existing_keystore.to_s.strip.empty? && File.file?(existing_keystore)
+        override_keystore = override_keystore || (!existing_keystore.to_s.strip.empty? && File.file?(existing_keystore))
         if !File.file?(keystore_path) || override_keystore 
 
           if File.file?(keystore_path)
@@ -286,7 +288,7 @@ module Fastlane
           end
 
           # https://developer.android.com/studio/publish/app-signing
-          if !File.file?(existing_keystore)
+          if existing_keystore.to_s.strip.empty? || !File.file?(existing_keystore)
             UI.message("Generating Android Keystore...")
             
             full_name = self.prompt2(text: "Certificate First and Last Name: ", value: data_full_name)
@@ -363,7 +365,7 @@ module Fastlane
           UI.message("APK to sign: " + apk_path)
 
           if File.file?(keystore_path)
-
+            UI.message("keystore_path:" + keystore_path)
             UI.message("Signing the APK...")
             puts ''
             output_signed_apk = self.sign_apk(
@@ -372,7 +374,7 @@ module Fastlane
               key_password, 
               alias_name, 
               alias_password, 
-              true # Zip align
+              false # Zip align
             )
             puts ''
           end 
