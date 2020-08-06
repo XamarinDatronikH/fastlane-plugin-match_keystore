@@ -218,6 +218,10 @@ module Fastlane
 
         # Check is 'security password' is well initialized:
         tmpkey = self.get_file_content(key_path).strip
+        
+        UI.message("tmpkey: " + tmpkey)
+        UI.message("tmpkey.length: " + tmpkey.length)
+
         if tmpkey.length == 128
           UI.message "Security key '#{key_name}' initialized"
         else
