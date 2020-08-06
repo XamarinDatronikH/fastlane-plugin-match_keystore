@@ -84,12 +84,14 @@ module Fastlane
 
       def self.encrypt_file(clear_file, encrypt_file, key_path)
         `rm -f '#{encrypt_file}'`
-        `openssl enc -aes-256-cbc -salt -pbkdf2 -in '#{clear_file}' -out '#{encrypt_file}' -pass file:'#{key_path}'`
+        `openssl enc -aes-256-cbc -salt -in '#{clear_file}' -out '#{encrypt_file}' -pass file:'#{key_path}'`
+        #`openssl enc -aes-256-cbc -salt -pbkdf2 -in '#{clear_file}' -out '#{encrypt_file}' -pass file:'#{key_path}'`
       end
 
       def self.decrypt_file(encrypt_file, clear_file, key_path)
         `rm -f '#{clear_file}'`
-        `openssl enc -d -aes-256-cbc -pbkdf2 -in '#{encrypt_file}' -out '#{clear_file}' -pass file:'#{key_path}'`
+        `openssl enc -d -aes-256-cbc -in '#{encrypt_file}' -out '#{clear_file}' -pass file:'#{key_path}'`
+        #`openssl enc -d -aes-256-cbc -pbkdf2 -in '#{encrypt_file}' -out '#{clear_file}' -pass file:'#{key_path}'`
       end
 
       def self.sign_apk(apk_path, keystore_path, key_password, alias_name, alias_password, zip_align)
