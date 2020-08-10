@@ -171,6 +171,13 @@ module Fastlane
         return_value
       end
 
+      def self.check_keystore_credentials(keystore_info_path)
+        data = File.read(keystore_info_path)
+        info = data.strip
+        
+        !info.start_with?("keytool error: java.io.IOException:")
+      end
+
       def self.run(params)
 
         # Get input parameters:
@@ -342,6 +349,10 @@ module Fastlane
           keystore_info_path = File.join(keystoreAppDir, keystore_info_name)
           `yes "" | keytool -list -v -keystore '#{keystore_path}' -storepass '#{key_password}' > '#{keystore_info_path}'`
           
+          if !check_keystore_credentials(keystore_info_path)
+            raise File.read?(keystore_info_path).strip
+          end
+
           UI.message("Upload new Keystore to remote repository...")
           puts ''
           `cd '#{repo_dir}' && git add .`
