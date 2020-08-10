@@ -347,7 +347,7 @@ module Fastlane
 
           # Print Keystore data in repo:
           keystore_info_path = File.join(keystoreAppDir, keystore_info_name)
-          `yes "" | keytool -list -v -keystore '#{keystore_path}' -storepass '#{key_password}' > '#{keystore_info_path}'`
+          `yes "" | keytool -list -v -keystore '#{keystore_path}' -storepass '#{key_password}' -alias '#{alias_name}' > '#{keystore_info_path}'`
           
           if !check_keystore_credentials(keystore_info_path)
             raise File.read(keystore_info_path).strip
