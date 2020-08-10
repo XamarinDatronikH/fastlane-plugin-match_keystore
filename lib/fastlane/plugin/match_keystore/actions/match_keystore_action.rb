@@ -350,7 +350,7 @@ module Fastlane
           `yes "" | keytool -list -v -keystore '#{keystore_path}' -storepass '#{key_password}' > '#{keystore_info_path}'`
           
           if !check_keystore_credentials(keystore_info_path)
-            raise File.read?(keystore_info_path).strip
+            raise File.read(keystore_info_path).strip
           end
 
           UI.message("Upload new Keystore to remote repository...")
