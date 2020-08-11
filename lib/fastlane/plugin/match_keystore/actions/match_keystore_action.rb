@@ -391,7 +391,7 @@ module Fastlane
               key_password, 
               alias_name, 
               alias_password, 
-              false # Zip align
+              true # Zip align
             )
             puts ''
           end 
